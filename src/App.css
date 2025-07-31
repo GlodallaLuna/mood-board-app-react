@@ -1,9 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
 /* Reset base */
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+:root {
+  --clr-white: #fff;
+  --clr-black: #221f23;
+  --clr-primary: ;
+  --clr-secondary: ;
+  --clr-gray-100: #ddd;
 }
 
 body,
@@ -18,12 +28,12 @@ figure {
   padding: 0;
 }
 
-body {
-  background: rgb(212, 209, 210);
-}
-
 html {
   font-size: 100%;
+}
+body {
+  font-family: "Montserrat", sans-serif;
+  color: var(--clr-black);
 }
 
 ul {
@@ -39,6 +49,7 @@ img {
   display: block;
   width: 100%;
   height: auto;
+  object-fit: cover;
 }
 
 :focus-visible {
@@ -50,12 +61,15 @@ header,
 section {
   text-align: center;
 }
-
-.mood-board {
+.max-w {
   max-width: 1520px;
   margin: 0 auto;
+}
+
+.mood-board {
   padding: 15px;
   background: #ffff;
+  padding: 8rem 0;
 }
 
 .mood-board-content {
@@ -71,12 +85,270 @@ section {
   margin-bottom: 1rem;
 }
 
+.image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
 .mood-board-img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 8px;
+  border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: scale(1.05);
+  filter: blur(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease, filter 0.6s ease;
+}
+
+.mood-board-img.loaded {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+.search-bar {
+  display: flex;
+  line-height: 28px;
+  align-items: center;
+  position: relative;
+  font-family: "Montserrat", sans-serif;
+  height: 45px;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border: 1px solid var(--clr-gray-100);
+  border-radius: 12px;
+  background-color: #fff;
+  margin: 2rem 1rem;
+}
+
+.search-bar__input {
+  outline: none;
+  color: var(--clr-blacks);
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  cursor: text;
+
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: #bdbecb;
+}
+
+.input:hover {
+  box-shadow: 0 0 0 2.5px #2f303d, 0px 0px 25px -15px #000;
+}
+
+.input:active {
+  transform: scale(0.95);
+}
+
+.input:focus {
+  box-shadow: 0 0 0 2.5px #2f303d;
+}
+
+.search-bar__button {
+  outline: none;
+  border: none;
+  background: none;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.search-bar__button:hover {
+  background-color: #eee;
+}
+
+.search-bar__icon {
+  fill: var(--clr-black);
+  width: 25px;
+  height: 25px;
+}
+
+/* Spinner animation */
+/* Spinner Container - Styles for the div that holds the spinner */
+.spinner-container {
+  display: flex;
+  flex-direction: column; /* To stack text below the spinner */
+  justify-content: center;
+  align-items: center;
+  min-height: 250px; /* Ensure enough height for the spinner and text */
+  width: 100%;
+  margin-top: 50px; /* Add some space from the search bar */
+}
+
+.loading-text {
+  margin-top: 15px;
+  font-size: 1.2em;
+  color: #555;
+}
+
+/* MAIN SPINNER ANIMATION */
+.spinner {
+  -webkit-animation: rotator 1.4s linear infinite;
+  animation: rotator 1.4s linear infinite;
+}
+
+@-webkit-keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+  }
+}
+
+@keyframes rotator {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(270deg);
+    transform: rotate(270deg);
+  }
+}
+
+/* PATH ANIMATION (the drawing/erasing circle) */
+.spinner .path {
+  stroke-dasharray: 187; /* Total length of the circle's circumference */
+  stroke-dashoffset: 0; /* Initial offset */
+  -webkit-transform-origin: center;
+  transform-origin: center; /* Important for rotation */
+  -webkit-animation: dash 1.4s ease-in-out infinite,
+    /* Animation for drawing/erasing */ colors 5.6s ease-in-out infinite; /* Animation for color change */
+  animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+
+@-webkit-keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  } /* Start with full offset (hidden) */
+  50% {
+    stroke-dashoffset: 46.75; /* Halfway through, draw part of the circle */
+    -webkit-transform: rotate(135deg); /* Rotate while drawing */
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187; /* End with full offset (hidden again), but rotated */
+    -webkit-transform: rotate(450deg); /* Full rotation for the path */
+    transform: rotate(450deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dashoffset: 187;
+  }
+  50% {
+    stroke-dashoffset: 46.75;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+  }
+  100% {
+    stroke-dashoffset: 187;
+    -webkit-transform: rotate(450deg);
+    transform: rotate(450deg);
+  }
+}
+
+/* COLORS ANIMATION */
+@-webkit-keyframes colors {
+  0% {
+    stroke: #4285f4;
+  } /* Blue */
+  25% {
+    stroke: #ac3cd1;
+  } /* Red */
+  50% {
+    stroke: #f7a223;
+  } /* Yellow */
+  75% {
+    stroke: #2dc492;
+  } /* Green */
+  100% {
+    stroke: #4285f4;
+  } /* Back to Blue */
+}
+
+@keyframes colors {
+  0% {
+    stroke: #4285f4;
+  } /* Blue */
+  25% {
+    stroke: #ac3cd1;
+  } /* Red */
+  50% {
+    stroke: #f7a223;
+  } /* Yellow */
+  75% {
+    stroke: #2dc492;
+  } /* Green */
+  100% {
+    stroke: #4285f4;
+  } /* Back to Blue */
+}
+
+/* preset box */
+
+.wrapper__preset-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+.preset-box {
+  position: relative;
+  aspect-ratio: 1.2;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 5%;
+  overflow: hidden;
+  cursor: pointer;
+}
+.preset-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #000000;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+.preset-box img {
+  aspect-ratio: 1.2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.3s ease;
+}
+.preset-box:hover img {
+  transform: scale(1.2);
+}
+.preset-box .subtitle {
+  color: var(--clr-white);
+  position: relative;
+  z-index: 2;
+  font-weight: 400;
+  padding: 1.5rem;
+  font-size: 1.2rem;
 }
 
 /*responsive*/
@@ -84,11 +356,19 @@ section {
   .mood-board-content {
     columns: 3;
   }
+  .wrapper__preset-box {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 768px) {
   .mood-board-content {
     columns: 2;
+  }
+}
+@media (max-width: 630px) {
+  .wrapper__preset-box {
+    grid-template-columns: 1fr;
   }
 }
 
