@@ -14,6 +14,7 @@
   --clr-primary: ;
   --clr-secondary: ;
   --clr-gray-100: #ddd;
+  --clr-gray-200: #807f7f;
 }
 
 body,
@@ -61,19 +62,32 @@ header,
 section {
   text-align: center;
 }
+
+header {
+  padding: 60px 20px 30px;
+}
 .max-w {
   max-width: 1520px;
   margin: 0 auto;
 }
 
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.content-wrapper {
+  flex-grow: 1;
+}
+
 .mood-board {
-  padding: 15px;
   background: #ffff;
-  padding: 8rem 0;
+  padding: 10% 1rem 5rem;
+  position: relative;
 }
 
 .mood-board-content {
-  columns: 3 200px; /* 4 colonne minime di 200px */
+  columns: 3 200px;
   column-gap: 1rem;
   list-style: none;
   padding: 0;
@@ -89,6 +103,27 @@ section {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
+}
+
+.overlay-text {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--clr-white);
+  background: #1e191d7d;
+  opacity: 0;
+  transition: all 0.3s ease;
+  padding: 0.8rem;
+}
+.image-wrapper:hover .overlay-text {
+  opacity: 1;
 }
 
 .mood-board-img {
@@ -174,6 +209,12 @@ section {
   height: 25px;
 }
 
+.error-message {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: red;
+}
+
 /* Spinner animation */
 /* Spinner Container - Styles for the div that holds the spinner */
 .spinner-container {
@@ -183,7 +224,7 @@ section {
   align-items: center;
   min-height: 250px; /* Ensure enough height for the spinner and text */
   width: 100%;
-  margin-top: 50px; /* Add some space from the search bar */
+  /*margin-top: 50px; /* Add some space from the search bar */
 }
 
 .loading-text {
@@ -301,6 +342,10 @@ section {
 }
 
 /* preset box */
+.section-preset .intro {
+  text-align: center;
+  margin-bottom: 2rem;
+}
 
 .wrapper__preset-box {
   display: grid;
@@ -325,6 +370,7 @@ section {
   width: 100%;
   height: 100%;
   z-index: 1;
+  transition: all 0.3s ease;
   background: #000000;
   background: linear-gradient(
     to bottom,
@@ -342,6 +388,10 @@ section {
 .preset-box:hover img {
   transform: scale(1.2);
 }
+.preset-box:hover::after {
+  opacity: 0;
+}
+
 .preset-box .subtitle {
   color: var(--clr-white);
   position: relative;
@@ -349,6 +399,64 @@ section {
   font-weight: 400;
   padding: 1.5rem;
   font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+.preset-box:hover .subtitle {
+  opacity: 0;
+}
+
+/* scroll down wave text */
+.wave-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: auto;
+  color: var(--clr-gray-200);
+}
+.wave-text span {
+  display: inline-block;
+  font-size: 1rem;
+  animation: wave 2s ease-in-out infinite;
+}
+.wave-container .chevron {
+  line-height: 1;
+}
+
+.wave-text span:nth-child(1) {
+  animation-delay: 0s;
+}
+.wave-text span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wave-text span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+.wave-text span:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.wave-text span:nth-child(5) {
+  animation-delay: 0.7s;
+}
+.wave-text span:nth-child(6) {
+  animation-delay: 0.8s;
+}
+
+@keyframes wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+footer {
+  text-align: center;
+  padding: 30px 10px;
+  flex-shrink: 0;
+  font-size: 0.9rem;
 }
 
 /*responsive*/
@@ -368,7 +476,12 @@ section {
 }
 @media (max-width: 630px) {
   .wrapper__preset-box {
-    grid-template-columns: 1fr;
+    gap: 0.5;
+  }
+
+  .preset-box .subtitle {
+    font-size: 0.9rem;
+    padding: 10px;
   }
 }
 

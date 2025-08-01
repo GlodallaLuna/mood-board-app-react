@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./components/header";
 import Form from "./components/Form";
-import Photogrid from "./components/Photogrid";
+import Moodboard from "./components/Moodboard";
 import PresetBox from "./components/PresetBox";
+import Footer from "./components/Footer";
 const UNSPLASH_ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
 if (!UNSPLASH_ACCESS_KEY) {
@@ -16,22 +17,26 @@ function App() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loadingState, setLoadingState] = useState(false);
   const initialPresetPrompts = [
-    { id: "autumn", query: "Red Sunset Autumn", title: "Red Sunset Autumn" },
+    {
+      id: "autumn",
+      query: "Crimson Kyoto, red shrine, temples, sunset autumn",
+      title: "Crimson Autumn in Japan",
+    },
     {
       id: "winter",
-      query: "Icy blue, crisp white, silver grey winter landscape",
-      title: "Icy Blue Winter",
+      query: "Sweden, icy blue winter, snowy white landscape",
+      title: "Icy Winter in Sweden",
     },
     {
       id: "spring",
-      query:
-        "Soft pastel pink, fresh mint green, clear sky blue blooming spring flowers",
-      title: "Soft Pastel Spring",
+      query: "Florence, Tuscany green spring, flowers, pink, wine",
+      title: "Blooming Spring in Tuscany",
     },
     {
       id: "summer",
-      query: "Vibrant turquoise, sunny yellow, coral red summer beach vacation",
-      title: "Vibrant Warm Summer",
+      query:
+        "California, coral bay, vibrant turquoise, sunny yellow, orange, summer beach vacation",
+      title: "Vibrant Summer in California",
     },
   ];
   const [loadedPresetPrompts, setLoadedPresetPrompts] = useState([]);
@@ -83,6 +88,7 @@ function App() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await fetch(url);
       const data = await response.json();
+      console.log(data.results);
 
       if (data.results && data.results.length > 0) {
         setImages(data.results);
@@ -96,7 +102,7 @@ function App() {
       console.error("Errore nel fetch:", error);
       setImages([]);
       setErrorMessage(
-        "Sorry, something went wrong while fetching images. Please try again!"
+        "Sorry, something went wrong while fetching images. Please try again later!"
       );
     } finally {
       setLoadingState(false);
@@ -133,35 +139,73 @@ function App() {
   };
 
   return (
-    <div className="max-w">
-      {/* headr */}
-      <Header
-        title="Mood Board App"
-        description="Type a term or a prompt to manifest your visual inspiration"
-      />
+    <div className="content">
+      <div className="max-w content-wrapper">
+        <Header title="Type a term or a prompt to manifest your visual inspiration" />
+        <Form
+          handleSearchChange={handleSearchChange}
+          searchQuery={searchQuery}
+          handleSearchSubmit={handleSearchSubmit}
+          errorMessage={errorMessage}
+        />
 
-      {/* form */}
-      <Form
-        handleSearchChange={handleSearchChange}
-        searchQuery={searchQuery}
-        handleSearchSubmit={handleSearchSubmit}
-        errorMessage={errorMessage}
-      />
+        <div className="section-preset">
+          {/* Mostra questo div solo quando i preset sono stati caricati */}
+          {loadedPresetPrompts.length > 0 && (
+            <>
+              <p className="intro">Feeling uninspired? Pick a preset.</p>
+              <div className="wrapper__preset-box">
+                {loadedPresetPrompts.map((preset) => (
+                  <PresetBox
+                    key={preset.id}
+                    query={preset.query}
+                    imageUrl={preset.imageUrl}
+                    title={preset.title}
+                    onClick={() => handlePrestClick(preset.query)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
 
-      <div className="wrapper__preset-box">
-        {loadedPresetPrompts.map((preset) => (
-          <PresetBox
-            key={preset.id}
-            query={preset.query}
-            imageUrl={preset.imageUrl}
-            title={preset.title}
-            onClick={() => handlePrestClick(preset.query)}
-          />
-        ))}
+        {/* Condizionale spinner */}
+        {loadingState ? (
+          <div className="spinner-container">
+            <svg
+              className="spinner"
+              width="65px"
+              height="65px"
+              viewBox="0 0 66 66"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                className="path"
+                fill="none"
+                strokeWidth="6"
+                strokeLinecap="round"
+                cx="33"
+                cy="33"
+                r="30"
+              ></circle>
+            </svg>
+            <p className="loading-text">Loading inspiration...</p>
+          </div>
+        ) : (
+          // Mostra la moodboard solo se ci sono immagini, altrimenti mostra l'errore
+          <>
+            {errorMessage && (
+              <div className="error-message">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            {images.length > 0 && (
+              <Moodboard images={images} loading={loadingState} />
+            )}
+          </>
+        )}
       </div>
-
-      {/* Moodboard grid */}
-      <Photogrid images={images} loading={loadingState} />
+      <Footer />
     </div>
   );
 }
